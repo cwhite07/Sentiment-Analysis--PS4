@@ -5,7 +5,10 @@ import java.util.ArrayList;
 
 public class TFIDF {
 
-	
+	/*
+		Move readFile out into something else
+		Pass in 3 ArrayLists instead
+	*/
 	public ArrayList<String> readFile( File f ) throws Exception {
 		ArrayList<String> words = new ArrayList<>();
 		BufferedReader br = new BufferedReader(new FileReader(f));
