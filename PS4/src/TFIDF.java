@@ -1,34 +1,9 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 
 public class TFIDF {
 
-	/*
-		Move readFile out into something else
-		Pass in 3 ArrayLists instead
-	*/
-	public ArrayList<String> readFile( File f ) throws Exception {
-		ArrayList<String> words = new ArrayList<>();
-		BufferedReader br = new BufferedReader(new FileReader(f));
-		String rec;
+	public double tf(  ArrayList<String> words, String word ) throws Exception {
 		
-		
-		while ( (rec = br.readLine() ) != null ) {
-			String[] splitWords = rec.split(" ");
-			for( String wordsInput : splitWords) {
-				words.add(wordsInput);				
-			}
-		}
-		
-		br.close();
-		return words;
-	}
-	
-	public double tf( File f, String word ) throws Exception {
-		
-		ArrayList<String> words = readFile(f);
 		int count = 0;
 		for ( String w : words ) {
 			if(word.equalsIgnoreCase(w)) {
@@ -39,22 +14,30 @@ public class TFIDF {
 		return count / words.size();
 	}
 	
-	public double idf( File[] files, String word ) throws Exception {
+	public double idf( ArrayList<String> positiveList, ArrayList<String> negativeList, ArrayList<String> neutralList, String word ) throws Exception {
 		int count = 0;
-		for ( File f : files ) {
-			ArrayList<String> words = readFile(f);
-			if ( words.contains(word) ) {
-				count++;
-			}
+		if ( positiveList.contains(word) ) {
+			count++;
+		}
+		if ( negativeList.contains(word) ) {
+			count++;
+		}
+		if ( neutralList.contains(word) ) {
+			count++;
+		}
+		return 	Math.log(3 / count);
+	}
+	
+	public double tfidf(ArrayList<String> positiveList, ArrayList<String> negativeList,ArrayList<String> neutralList, String w, int emotion) throws Exception {
+		if(emotion == -1) {
+			return tf(negativeList, w) * idf(positiveList, negativeList, neutralList, w);	
+		} else if(emotion == 0) {
+			return tf(neutralList, w) * idf(positiveList, negativeList, neutralList, w);	
+		} else {
+			return tf(positiveList, w) * idf(positiveList, negativeList, neutralList, w);	
 		}
 		
 		
-		return 	Math.log(files.length / count);
-	}
-	
-	//Change file[] and file to be the arraylists instead
-	public double tfidf(File[] files, File f, String w) throws Exception {
-		return tf(f, w) * idf(files, w);
 	}
 	
 
