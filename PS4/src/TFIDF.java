@@ -52,6 +52,7 @@ public class TFIDF {
 		return 	Math.log(files.length / count);
 	}
 	
+	//Change file[] and file to be the arraylists instead
 	public double tfidf(File[] files, File f, String w) throws Exception {
 		return tf(f, w) * idf(files, w);
 	}
